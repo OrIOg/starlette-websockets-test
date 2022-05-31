@@ -1,0 +1,23 @@
+<head>
+
+</head>
+<body>
+    <ul id="logs">
+
+    </ul>
+    <script>
+        function pad(value, n) {
+            return ('0000'+value).slice(-n)
+        }
+        
+        const ws = new WebSocket("ws://localhost:8000/ws");
+        ws.onmessage = e => {
+            console.log(e)
+            const time = new Date()
+            const timeString = `${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(time.getSeconds(), 2)}:${pad(time.getMilliseconds()*1000, 6)}`
+            const li = document.createElement("li")
+            li.appendChild(document.createTextNode(`[${timeString}] ~ ${e.data}`))
+            document.querySelector("#logs").appendChild(li)
+        }
+    </script>
+</body>
