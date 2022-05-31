@@ -1,4 +1,4 @@
-#!./venv/bin/python
+#!/usr/bin/env python
 from re import sub
 import subprocess
 from starlette import applications, responses
@@ -11,13 +11,15 @@ async def home(request):
 async def websocketEndpoint(websocket):
     await websocket.accept()
     myprocess = subprocess.Popen('./sub.py', stdout=subprocess.PIPE, text=True)
-    while True:
+    i = 0
+    while i < 25:
         time = datetime.datetime.now().strftime("%H:%M:%S:%f")
         line = f"[{time}] {myprocess.stdout.readline()}"
         print(line)
         await websocket.send_text(line)
-        if myprocess.poll() != None: break
+        i += 1
     myprocess.stdout.close()
+    await websocket.close()
 
 routes = [
     routing.Route('/', home),
